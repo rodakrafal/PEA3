@@ -149,18 +149,18 @@ void GeneticAlgorithm::apply(int chosenMutation) {
     vector<PopulationElement> next_population(population);
     clock_t start;
 
-    string crossingOperationName, mutationOperationName, mutationRateName;
+    string crossingOperationName, mutationOperationName, crossingRateName;
     if(crossingOperations == 1) crossingOperationName = "PMX";
     else if (crossingOperations == 2) crossingOperationName = "OX";
 
     if(mutationOperations == 1) mutationOperationName = "INSERT";
     else if (mutationOperations == 2) mutationOperationName = "SWAP";
-    if(chosenMutation == 0) mutationRateName = "05";
-    else if(chosenMutation == 1) mutationRateName = "1";
-    else mutationRateName = "xxx";
+    if (chosenMutation == 0) crossingRateName = "05";
+    else if (chosenMutation == 1) crossingRateName = "07";
+    else if (chosenMutation == 2) crossingRateName = "09";
 
     fstream fileCreate;
-    string fileName = to_string(number_of_towns) + "_" + mutationRateName + "_" + crossingOperationName + "_" + mutationOperationName +
+    string fileName = to_string(number_of_towns) + "_" + crossingRateName + "_" + crossingOperationName + "_" + mutationOperationName +
             + "_v"+ to_string(iteration) + ".csv";
     fileCreate.open(fileName,ios::out);
     if(!fileCreate)
@@ -173,7 +173,7 @@ void GeneticAlgorithm::apply(int chosenMutation) {
     {
         std::cout << "\n\nNie mozna zapisac, podany plik nie istnieje!\n\n";
     }
-    file << "Mutacja 0. " + mutationRateName << " czas "<< stop_time<< + " " + crossingOperationName + " " + mutationOperationName << endl;
+    file << "Mutacja 0." + crossingRateName << " czas "<< stop_time<< + " " + crossingOperationName + " " + mutationOperationName << endl;
     chrono::system_clock::time_point start_time = chrono::system_clock::now();
     start = std::clock();
     // Kolejne iteracje algorytmu
