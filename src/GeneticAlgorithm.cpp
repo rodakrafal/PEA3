@@ -148,6 +148,7 @@ void GeneticAlgorithm::apply() {
     population = makePopulation(populationSize);
     vector<PopulationElement> next_population(population);
     clock_t start;
+
     string crossingOperationName, mutationOperationName;
     if(crossingOperations == 1) crossingOperationName = "PMX";
     else if (crossingOperations == 2) crossingOperationName = "OX";
@@ -186,7 +187,9 @@ void GeneticAlgorithm::apply() {
             if(x.fitness < best_cost) {
                 best_cost = x.fitness;
                 best_route = x.route;
-                file << to_string(best_cost) << " ; "<< to_string((double)(clock() - start) / (CLOCKS_PER_SEC))<< endl;
+                    file << to_string(best_cost) << " ; "<< to_string((double)(clock() - start) / (CLOCKS_PER_SEC))<< endl;
+
+
             }
         }
         // Tworzenie nowej populacji na drodze selekcji
@@ -195,10 +198,10 @@ void GeneticAlgorithm::apply() {
         // Krzyżowanie oraz mutowanie osobników
         for (int i = 0; i < populationSize; i += 1) {
             if ((double)rand() / RAND_MAX <= crossRate){
-                int first_rand_index = randomIndex();
-                int second_rand_index = randomIndex();
+                int first_rand_index = rand()%(populationSize - 1) +1;
+                int second_rand_index = rand()%(populationSize - 1) +1;
                 while (first_rand_index == second_rand_index)
-                    second_rand_index = randomIndex();
+                    second_rand_index = rand()%(populationSize - 1) +1;
 
                 switch (crossingOperations) {
                     case CrossingOperations::OX:
@@ -223,6 +226,7 @@ void GeneticAlgorithm::apply() {
         }
     }
     file << to_string(best_cost) << " ; "<< to_string((double)(clock() - start) / (CLOCKS_PER_SEC))<< endl;
+
     fileCreate.close();
     file.close();
 
