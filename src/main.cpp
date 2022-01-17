@@ -7,7 +7,6 @@
 
 #include "Towns.h"
 #include "GeneticAlgorithm.h"
-#include <iostream>
 
 using namespace std;
 
@@ -182,32 +181,138 @@ void menu() {
                 GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations);
                 geneticAlgorithm.apply();
                 geneticAlgorithm.printBestRoute();
+                if (towns.getOptimalResult() != 0)
+                    cout << "Relative error: " << float(abs(geneticAlgorithm.getBestRouteCost() - towns.getOptimalResult())) / towns.getOptimalResult() * 100 << "%" << endl;
                 break;
             }
 
             case 't': {
-                stop_time = 30;
+                // ------------------------------------ PMX INSERT
+                int tmp = 0, currentFile = 0,i;
                 population = 100;
-                towns.loadDataFromFile("ftv55.txt");
+                stop_time = 60;
+
                 crossingOperations = TSP_Algorithm::PMX;
                 mutationOperations = TSP_Algorithm::Insert;
-                int i = 0;
-                for ( ; ; ){
-                    GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations);
-                    geneticAlgorithm.apply();
-                    geneticAlgorithm.printBestRoute();
-                    i ++;
-                    if(i==5)break;
+
+                for(;;){
+                    if(currentFile == 0)towns.loadDataFromFile("ftv47.tsp");
+                    if(currentFile == 1)towns.loadDataFromFile("ftv170.tsp");
+                    if(currentFile == 2)towns.loadDataFromFile("rbg403.tsp");
+
+                    for (;;){
+                        i = 0;
+                        for ( ; ; ){
+                            GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations,i+1);
+                            geneticAlgorithm.apply();
+                            cout << "Rozmiar: " <<to_string(towns.getTowns()[0].size()) << endl;
+                            cout << "PMX INSERT iteracja: " << i;
+                            i ++;
+                            if(i==1)break;
+                        }
+                        if(tmp == 3) break;
+                        if(tmp == 2 ) population = 1000;
+                        if(tmp == 1) population = 500;
+                        tmp ++;
+                    }
+                    if(currentFile==2)break;
+                    currentFile++;
                 }
+
+                // ------------------------------------ PMX SWAP
+                tmp = 0, currentFile = 0,i;
+                population = 100;
+                stop_time = 60;
+
+                crossingOperations = TSP_Algorithm::PMX;
+                mutationOperations = TSP_Algorithm::Swap;
+
+                for(;;){
+                    if(currentFile == 0)towns.loadDataFromFile("ftv47.tsp");
+                    if(currentFile == 1)towns.loadDataFromFile("ftv170.tsp");
+                    if(currentFile == 2)towns.loadDataFromFile("rbg403.tsp");
+
+                    for (;;){
+                        i = 0;
+                        for ( ; ; ){
+                            GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations,i+1);
+                            geneticAlgorithm.apply();
+                            cout << "Rozmiar: " <<to_string(towns.getTowns()[0].size()) << endl;
+                            cout << "PMX SWAP iteracja: " << i;
+                            i ++;
+                            if(i==1)break;
+                        }
+                        if(tmp == 3) break;
+                        if(tmp == 2 ) population = 1000;
+                        if(tmp == 1) population = 500;
+                        tmp ++;
+                    }
+                    if(currentFile==2)break;
+                    currentFile++;
+                }
+
+                // ------------------------------------ OX INSERT
+                tmp = 0, currentFile = 0,i;
+                population = 100;
+                stop_time = 60;
+
                 crossingOperations = TSP_Algorithm::OX;
-                cout << "\n\n";
-                i = 0;
-                for ( ; ; ){
-                    GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations);
-                    geneticAlgorithm.apply();
-                    geneticAlgorithm.printBestRoute();
-                    i ++;
-                    if(i==5)break;
+                mutationOperations = TSP_Algorithm::Insert;
+
+                for(;;){
+                    if(currentFile == 0)towns.loadDataFromFile("ftv47.tsp");
+                    if(currentFile == 1)towns.loadDataFromFile("ftv170.tsp");
+                    if(currentFile == 2)towns.loadDataFromFile("rbg403.tsp");
+
+                    for (;;){
+                        i = 0;
+                        for ( ; ; ){
+                            GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations,i+1);
+                            geneticAlgorithm.apply();
+                            cout << "Rozmiar: " <<to_string(towns.getTowns()[0].size()) << endl;
+                            cout << "OX INSERT iteracja: " << i;
+                            i ++;
+                            if(i==1)break;
+                        }
+                        if(tmp == 3) break;
+                        if(tmp == 2 ) population = 1000;
+                        if(tmp == 1) population = 500;
+                        tmp ++;
+                    }
+                    if(currentFile==2)break;
+                    currentFile++;
+                }
+
+                // ------------------------------------ OX SWAP
+                tmp = 0, currentFile = 0,i;
+                population = 100;
+                stop_time = 60;
+
+                crossingOperations = TSP_Algorithm::OX;
+                mutationOperations = TSP_Algorithm::Swap;
+
+                for(;;){
+                    if(currentFile == 0)towns.loadDataFromFile("ftv47.tsp");
+                    if(currentFile == 1)towns.loadDataFromFile("ftv170.tsp");
+                    if(currentFile == 2)towns.loadDataFromFile("rbg403.tsp");
+
+                    for (;;){
+                        i = 0;
+                        for ( ; ; ){
+                            GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations,i+1);
+                            geneticAlgorithm.apply();
+                            cout << "Rozmiar: " <<to_string(towns.getTowns()[0].size()) << endl;
+                            cout << "OX SWAP iteracja: " << i;
+                            i ++;
+                            if(i==1)break;
+                        }
+                        if(tmp == 3) break;
+                        if(tmp == 2 ) population = 1000;
+                        if(tmp == 1) population = 500;
+                        tmp ++;
+                    }
+                    if(currentFile==2)break;
+                    currentFile++;
                 }
 
                 break;

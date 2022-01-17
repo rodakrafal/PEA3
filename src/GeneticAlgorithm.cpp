@@ -6,6 +6,8 @@
 
 #include <algorithm>
 #include <chrono>
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 
@@ -20,19 +22,23 @@ GeneticAlgorithm::GeneticAlgorithm(std::vector<std::vector<int>> towns, int stop
     this->mutationRate = mutationRate;
     this->crossingOperations = crossingOperations;
     this->mutationOperations = mutationOperations;
+    this->iteration = 0;
 }
 
 
 void GeneticAlgorithm::partiallyCrossover(std::vector<int> &parent1, std::vector<int> &parent2) const {
-    std::vector<int> desc1(number_of_towns, -1), desc2(number_of_towns, -1);
-    std::vector<int> map1(number_of_towns, -1), map2(number_of_towns, -1);
+    std::vector<int> desc1(number_of_towns, -1), desc2(number_of_towns, -1),
+    map1(number_of_towns, -1), map2(number_of_towns, -1);
 
     int begin, end, temp;
 
     do {
-        begin = rand() % number_of_towns;
-        end = rand() % number_of_towns;
-    } while ((0 >= (end - begin)) || !begin || !(end - (number_of_towns - 1)));
+        begin = randomIndex();
+        end = randomIndex();
+    } while (begin == end);
+
+    if (begin > end)
+        swap(begin, end);
 
     for (int i = begin; i <= end; i++) {
         desc1.at(i) = parent1.at(i);
@@ -73,7 +79,7 @@ void GeneticAlgorithm::partiallyCrossover(std::vector<int> &parent1, std::vector
 }
 
 void GeneticAlgorithm::orderedCrossover(std::vector<int> &parent1, std::vector<int> &parent2) const {
-    vector<int> desc1(number_of_towns), desc2(number_of_towns), temp1(number_of_towns), temp2(number_of_towns);
+    vector<int> temp1(number_of_towns), temp2(number_of_towns);
 
     int begin, end;
 
@@ -81,15 +87,12 @@ void GeneticAlgorithm::orderedCrossover(std::vector<int> &parent1, std::vector<i
     temp2 = parent2;
 
     do {
-        begin = rand() % number_of_towns;
-        end = rand() % number_of_towns;
-    } while ((0 >= (end - begin)) || !begin || !(end - (number_of_towns - 1)));
+        begin = randomIndex();
+        end = randomIndex();
+    } while (begin == end);
 
-
-    for (int i = begin; i <= end; i++) {
-        desc1[i] = parent1[i];
-        desc2[i] = parent2[i];
-    }
+    if (begin > end)
+        swap(begin, end);
 
     int p1 = 0;
     int p2 = 0;
@@ -99,15 +102,15 @@ void GeneticAlgorithm::orderedCrossover(std::vector<int> &parent1, std::vector<i
         if (p2 == begin) p2 = end + 1;
 
         if (i >= begin && i <= end) {
-            parent1[i] = desc2[i];
-            parent2[i] = desc1[i];
+            parent1[i] = temp2[i];
+            parent2[i] = temp1[i];
         }
 
-        if (*find(desc2.begin() + begin, desc2.begin() + end, temp1[i]) != temp1[i]) {
+        if (*find(temp2.begin() + begin, temp2.begin() + end, temp1[i]) != temp1[i]) {
             parent1[p1] = temp1[i];
             p1++;
         }
-        if (*find(desc1.begin() + begin, desc1.begin() + end, temp2[i]) != temp2[i]) {
+        if (*find(temp1.begin() + begin, temp1.begin() + end, temp2[i]) != temp2[i]) {
             parent2[p2] = temp2[i];
             p2++;
         }
@@ -144,8 +147,32 @@ void GeneticAlgorithm::apply() {
     vector<PopulationElement> population(populationSize);
     population = makePopulation(populationSize);
     vector<PopulationElement> next_population(population);
-    chrono::system_clock::time_point start_time = chrono::system_clock::now();
+    clock_t start;
+    string crossingOperationName, mutationOperationName;
+    if(crossingOperations == 1) crossingOperationName = "PMX";
+    else if (crossingOperations == 2) crossingOperationName = "OX";
 
+    if(mutationOperations == 1) mutationOperationName = "INSERT";
+    else if (mutationOperations == 2) mutationOperationName = "SWAP";
+
+    fstream fileCreate;
+    string fileName = to_string(populationSize) + "_" + to_string(number_of_towns) + "_" + crossingOperationName + "_" + mutationOperationName +
+            + "_v"+ to_string(iteration) + ".csv";
+    fileCreate.open(fileName,ios::out);
+    if(!fileCreate)
+    {
+        cout<<"\n\nError in creating file!\n\n";
+    }
+    ofstream file;
+    file.open(fileName);
+    if(!file)
+    {
+        std::cout << "\n\nNie mozna zapisac, podany plik nie istnieje!\n\n";
+    }
+    file << "Rozmiar pliku " + to_string(populationSize) << " czas trwania "<< stop_time<< " krosowanie " + crossingOperationName
+    + " mutacja " + mutationOperationName + " iteracja "+ to_string(iteration) << endl;
+    chrono::system_clock::time_point start_time = chrono::system_clock::now();
+    start = std::clock();
     // Kolejne iteracje algorytmu
     while (true) {
 
@@ -159,9 +186,9 @@ void GeneticAlgorithm::apply() {
             if(x.fitness < best_cost) {
                 best_cost = x.fitness;
                 best_route = x.route;
+                file << to_string(best_cost) << " ; "<< to_string((double)(clock() - start) / (CLOCKS_PER_SEC))<< endl;
             }
         }
-
         // Tworzenie nowej populacji na drodze selekcji
         selection(population);
 
@@ -187,6 +214,18 @@ void GeneticAlgorithm::apply() {
             }
         }
     }
+
+    for (auto &x : population) {
+        x.fitness = getGivenRouteCost(x.route);
+        if(x.fitness < best_cost) {
+            best_cost = x.fitness;
+            best_route = x.route;
+        }
+    }
+    file << to_string(best_cost) << " ; "<< to_string((double)(clock() - start) / (CLOCKS_PER_SEC))<< endl;
+    fileCreate.close();
+    file.close();
+
 }
 
 void GeneticAlgorithm::mutation(std::vector<int> &route, TSP_Algorithm::MutationOperations mutationOperations) {
@@ -206,4 +245,20 @@ void GeneticAlgorithm::mutation(std::vector<int> &route, TSP_Algorithm::Mutation
             swap(route[first_rand_index], route[second_rand_index]); // zamiana wartości pod danymi indeksami
             break;
     }
+}
+
+GeneticAlgorithm::GeneticAlgorithm(std::vector<std::vector<int>> towns, int stop_time, int population, float crossRate,
+                                   float mutationRate, TSP_Algorithm::CrossingOperations crossingOperations,
+                                   TSP_Algorithm::MutationOperations mutationOperations, int iteration) {
+
+    matrix = move(towns);
+    number_of_towns = matrix[0].size();
+    this->stop_time = stop_time;
+    this->matrix = matrix;
+    this->populationSize = population;
+    this->crossRate = crossRate;
+    this->mutationRate = mutationRate;
+    this->crossingOperations = crossingOperations;
+    this->mutationOperations = mutationOperations;
+    this->iteration = iteration;
 }

@@ -6,6 +6,7 @@
 #define PEA3_TOWNS_H
 
 #include <vector>
+#include <string>
 
 class Towns
 {
