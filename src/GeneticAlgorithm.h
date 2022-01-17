@@ -25,7 +25,7 @@ public:
     GeneticAlgorithm(std::vector<std::vector<int>> towns, int stop_time, int population, float crossRate, float mutationRate, CrossingOperations crossingOperations, MutationOperations mutationOperations, int iteration);
     void orderedCrossover(std::vector<int> &parent1, std::vector<int> &parent2) const;
     void partiallyCrossover(std::vector<int> &parent1, std::vector<int> &parent2) const;
-    void apply();
+    void apply(int chosenMutation);
     void selection(std::vector<PopulationElement> &population);
     void mutation(std::vector<int> &route, MutationOperations mutationOperations);
 };

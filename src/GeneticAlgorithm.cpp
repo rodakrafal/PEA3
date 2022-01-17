@@ -142,22 +142,25 @@ void GeneticAlgorithm::selection(vector<PopulationElement> &population){
     population.swap(nextPopulation);
 }
 
-void GeneticAlgorithm::apply() {
+void GeneticAlgorithm::apply(int chosenMutation) {
     best_cost = INT_MAX;
     vector<PopulationElement> population(populationSize);
     population = makePopulation(populationSize);
     vector<PopulationElement> next_population(population);
     clock_t start;
 
-    string crossingOperationName, mutationOperationName;
+    string crossingOperationName, mutationOperationName, mutationRateName;
     if(crossingOperations == 1) crossingOperationName = "PMX";
     else if (crossingOperations == 2) crossingOperationName = "OX";
 
     if(mutationOperations == 1) mutationOperationName = "INSERT";
     else if (mutationOperations == 2) mutationOperationName = "SWAP";
+    if(chosenMutation == 0) mutationRateName = "05";
+    else if(chosenMutation == 1) mutationRateName = "1";
+    else mutationRateName = "xxx";
 
     fstream fileCreate;
-    string fileName = to_string(populationSize) + "_" + to_string(number_of_towns) + "_" + crossingOperationName + "_" + mutationOperationName +
+    string fileName = to_string(number_of_towns) + "_" + mutationRateName + "_" + crossingOperationName + "_" + mutationOperationName +
             + "_v"+ to_string(iteration) + ".csv";
     fileCreate.open(fileName,ios::out);
     if(!fileCreate)
@@ -170,8 +173,7 @@ void GeneticAlgorithm::apply() {
     {
         std::cout << "\n\nNie mozna zapisac, podany plik nie istnieje!\n\n";
     }
-    file << "Rozmiar pliku " + to_string(populationSize) << " czas trwania "<< stop_time<< " krosowanie " + crossingOperationName
-    + " mutacja " + mutationOperationName + " iteracja "+ to_string(iteration) << endl;
+    file << "Mutacja 0. " + mutationRateName << " czas "<< stop_time<< + " " + crossingOperationName + " " + mutationOperationName << endl;
     chrono::system_clock::time_point start_time = chrono::system_clock::now();
     start = std::clock();
     // Kolejne iteracje algorytmu
