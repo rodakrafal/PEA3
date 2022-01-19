@@ -179,7 +179,7 @@ void menu() {
                     break;
                 }
                 GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations,0);
-                geneticAlgorithm.apply(3);
+                geneticAlgorithm.execute();
                 geneticAlgorithm.printBestRoute();
                 if (towns.getOptimalResult() != 0)
                     cout << "Relative error: " << float(abs(geneticAlgorithm.getBestRouteCost() - towns.getOptimalResult())) / towns.getOptimalResult() * 100 << "%" << endl;
@@ -219,7 +219,7 @@ void menu() {
                             cout << "Populacja: " << population << endl;
                             cout << "Krzyżowanie: " << crossesRate << endl;
                             GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations,i+1);
-                            geneticAlgorithm.apply(tmp);
+                            geneticAlgorithm.execute();
                             i ++;
                             if(i==3)break;
                         }
@@ -263,7 +263,7 @@ void menu() {
                             cout << "Populacja: " << population << endl;
                             cout << "Krzyżowanie: " << crossesRate << endl;
                             GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations,i+1);
-                            geneticAlgorithm.apply(tmp);
+                            geneticAlgorithm.execute();
                             i ++;
                             if(i==3)break;
                         }
@@ -308,7 +308,7 @@ void menu() {
                             cout << "Populacja: " << population << endl;
                             cout << "Krzyżowanie: " << crossesRate << endl;
                             GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations,i+1);
-                            geneticAlgorithm.apply(tmp);
+                            geneticAlgorithm.execute();
                             i ++;
                             if(i==3)break;
                         }
@@ -352,7 +352,7 @@ void menu() {
                             cout << "Populacja: " << population << endl;
                             cout << "Krzyżowanie: " << crossesRate << endl;
                             GeneticAlgorithm geneticAlgorithm(towns.getTowns(),stop_time,population,crossesRate,mutationsRate, crossingOperations, mutationOperations,i+1);
-                            geneticAlgorithm.apply(tmp);
+                            geneticAlgorithm.execute();
                             i ++;
                             if(i==3)break;
                         }

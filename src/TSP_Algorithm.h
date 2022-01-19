@@ -16,12 +16,12 @@ struct PopulationElement
 class TSP_Algorithm {
 public:
 
-    enum CrossingOperations{
+    enum CrossingOperations{                // enum z dostępnymi operacjami krzyżowania
         PMX = 1,
         OX = 2,
     };
 
-    enum MutationOperations{
+    enum MutationOperations{                // enum z dostępnymi operacjami mutacji
         Insert = 1,
         Swap = 2,
     };

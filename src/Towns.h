@@ -11,14 +11,14 @@
 class Towns
 {
 private:
-    std::vector<std::vector<int>> towns;
-    int optimal_result;
+    std::vector<std::vector<int>> towns;            // macierz z danymi
+    int optimal_result;                             // optymalne rozwiązanie dla danego pliku
 
 public:
-    int getOptimalResult() const;
-    void loadDataFromFile(const char *filename);
-    void printData();
-    std::vector<std::vector<int>> getTowns();
+    int getOptimalResult() const;                   // zwraca optymalne rozwiązanie
+    void loadDataFromFile(const char *filename);    // wczytuje dane z pliku
+    void printData();                               // wypisuje zapisane z pliku dane
+    std::vector<std::vector<int>> getTowns();       // zwraca macierz -> wektor 2d z danymi
 };
 
 #endif //PEA3_TOWNS_H
